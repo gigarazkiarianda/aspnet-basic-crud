@@ -1,0 +1,18 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8">
+            <div class="text-center">
+                <h1 class="display-4">Welcome to ProductDB</h1>
+                <p class="lead">Learn about <a href="https://learn.microsoft.com/aspnet/core" target="_blank">building Web apps with ASP.NET Core</a>.</p>
+                <p>
+                    <a href="@Url.Action("Index", "Products")" class="btn btn-primary btn-lg">Go to Products</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
