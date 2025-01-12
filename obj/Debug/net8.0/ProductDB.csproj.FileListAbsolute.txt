@@ -102,3 +102,4 @@ C:\Users\razki\source\repos\ProductDB\obj\Debug\net8.0\refint\ProductDB.dll
 C:\Users\razki\source\repos\ProductDB\obj\Debug\net8.0\ProductDB.pdb
 C:\Users\razki\source\repos\ProductDB\obj\Debug\net8.0\ProductDB.genruntimeconfig.cache
 C:\Users\razki\source\repos\ProductDB\obj\Debug\net8.0\ref\ProductDB.dll
+C:\Users\razki\source\repos\ProductDB\obj\Debug\net8.0\ProductDB.sourcelink.json

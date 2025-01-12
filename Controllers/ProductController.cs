@@ -17,36 +17,14 @@ namespace ProductDB.Controllers
         // GET: Products
         public async Task<IActionResult> Index()
         {
-            // Get all products from the database
-            var products = await _context.Products.ToListAsync();
-            return View(products);  // Return to Index view with products data
-        }
-
-        // GET: Products/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            // Check if the ID is provided
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var product = await _context.Products
-                .FirstOrDefaultAsync(m => m.Id == id);  // Get product by ID
-
-            // Check if product is not found
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            return View(product);  // Return product details view
+            var products = await _context.Products.AsNoTracking().ToListAsync();
+            return View(products);
         }
 
         // GET: Products/Create
         public IActionResult Create()
         {
-            return View();  // Show the form to create a new product
+            return View();
         }
 
         // POST: Products/Create
@@ -54,58 +32,52 @@ namespace ProductDB.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Name,Price,Stock")] Product product)
         {
-            // If model is valid, add the product to the database
             if (ModelState.IsValid)
             {
                 _context.Add(product);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));  // Redirect to Index page after successful creation
+                return RedirectToAction(nameof(Index));
             }
-            return View(product);  // Return the same Create form with validation errors
+            return View(product);
         }
 
-        // GET: Products/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        // GET: Products/EditProduct/5
+        public async Task<IActionResult> EditProduct(int? id)
         {
-            // Check if the ID is provided
             if (id == null)
             {
                 return NotFound();
             }
 
-            var product = await _context.Products.FindAsync(id);  // Find the product by ID
-
-            // If product is not found, return NotFound
+            var product = await _context.Products.FindAsync(id);
             if (product == null)
             {
                 return NotFound();
             }
 
-            return View(product);  // Return the Edit form with the product details
+            return View(product);
         }
 
-        // POST: Products/Edit/5
+        // POST: Products/EditProduct/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Price,Stock")] Product product)
+        public async Task<IActionResult> EditProduct(int id, [Bind("Id,Name,Price,Stock")] Product product)
         {
-            // If the product ID doesn't match, return NotFound
             if (id != product.Id)
             {
                 return NotFound();
             }
 
-            // If the model state is valid, update the product
             if (ModelState.IsValid)
             {
                 try
                 {
                     _context.Update(product);
-                    await _context.SaveChangesAsync();  // Save the changes to the database
+                    await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!_context.Products.Any(e => e.Id == product.Id))
+                    if (!ProductExists(product.Id))
                     {
                         return NotFound();
                     }
@@ -114,46 +86,30 @@ namespace ProductDB.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));  // Redirect to the Index view after successful update
+                return RedirectToAction(nameof(Index)); // Navigasi ke halaman Index setelah berhasil menyimpan
             }
-            return View(product);  // Return the Edit form with validation errors
+            return View(product); // Jika model tidak valid, tampilkan kembali form edit dengan pesan error
         }
 
-        // GET: Products/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            // Check if the ID is provided
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var product = await _context.Products
-                .FirstOrDefaultAsync(m => m.Id == id);  // Get the product to be deleted
-
-            // If product is not found, return NotFound
-            if (product == null)
-            {
-                return NotFound();
-            }
-
-            return View(product);  // Return the Delete confirmation view
-        }
-
-        // POST: Products/Delete/5
-        [HttpPost, ActionName("Delete")]
+        // POST: Products/DeleteProduct/5
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteProduct(int id)
         {
-            var product = await _context.Products.FindAsync(id);  // Find the product by ID
+            var product = await _context.Products.FindAsync(id);
 
             if (product != null)
             {
-                _context.Products.Remove(product);  // Remove the product from the database
-                await _context.SaveChangesAsync();  // Save the changes
+                _context.Products.Remove(product);
+                await _context.SaveChangesAsync();
             }
 
-            return RedirectToAction(nameof(Index));  // Redirect to the Index view after deletion
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool ProductExists(int id)
+        {
+            return _context.Products.Any(e => e.Id == id);
         }
     }
 }
